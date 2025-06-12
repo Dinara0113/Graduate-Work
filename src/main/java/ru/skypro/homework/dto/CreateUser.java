@@ -1,16 +1,15 @@
 package ru.skypro.homework.dto;
 
-import lombok.Data;
-
-@Data
-public class Register {
-
+public class CreateUser {
     private String username;
     private String password;
     private String firstName;
     private String lastName;
     private String phone;
     private Role role;
+
+    public CreateUser() {
+    }
 
     public String getUsername() {
         return username;
@@ -58,17 +57,5 @@ public class Register {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    @Override
-    public String toString() {
-        return "Register{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", role=" + role +
-                '}';
     }
 }
