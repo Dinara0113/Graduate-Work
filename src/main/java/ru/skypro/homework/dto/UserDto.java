@@ -1,5 +1,7 @@
 package ru.skypro.homework.dto;
 
+import ru.skypro.homework.model.Role;
+
 public class UserDto {
     private Integer id;
     private String email;

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.skypro.homework.TestSecurityConfig;
 import ru.skypro.homework.dto.Login;
 import ru.skypro.homework.dto.Register;
-import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.model.Role;
 import ru.skypro.homework.service.AuthService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -35,9 +35,11 @@ public class AuthControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Настройка поведения mock-сервиса
+        // Успешный логин
         when(authService.login("user", "pass")).thenReturn(true);
+        // Неуспешный логин
         when(authService.login("user", "wrong")).thenReturn(false);
+        // Успешная регистрация
         when(authService.register(any(Register.class))).thenReturn(true);
     }
 
@@ -83,13 +85,14 @@ public class AuthControllerTest {
 
     @Test
     public void testRegister_BadRequest() throws Exception {
-        Register empty = new Register(); // невалидные данные
+        Register invalidRegister = new Register();
+        invalidRegister.setUsername("");
 
         when(authService.register(any(Register.class))).thenReturn(false);
 
         mockMvc.perform(post("/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(empty)))
+                        .content(objectMapper.writeValueAsString(invalidRegister)))
                 .andExpect(status().isBadRequest());
     }
 }

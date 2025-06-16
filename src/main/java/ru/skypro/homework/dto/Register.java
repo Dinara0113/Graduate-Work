@@ -1,15 +1,30 @@
 package ru.skypro.homework.dto;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import ru.skypro.homework.model.Role;
 
-@Data
 public class Register {
-
+    @NotBlank
+    @Size(min = 4, max = 32)
     private String username;
+
+    @NotBlank
+    @Size(min = 8, max = 16)
     private String password;
+
+    @NotBlank
+    @Size(min = 2, max = 16)
     private String firstName;
+
+    @NotBlank
+    @Size(min = 2, max = 16)
     private String lastName;
+
+    @Pattern(regexp = "\\+7\\s?\\(?\\d{3}\\)?\\s?\\d{3}-?\\d{2}-?\\d{2}")
     private String phone;
+
     private Role role;
 
     public String getUsername() {
@@ -58,17 +73,5 @@ public class Register {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    @Override
-    public String toString() {
-        return "Register{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", role=" + role +
-                '}';
     }
 }
