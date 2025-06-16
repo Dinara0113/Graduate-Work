@@ -6,10 +6,23 @@ public class CommentDto {
     private Integer pk;
     private String author;
     private String authorImage;
-    private LocalDateTime createdAt;
     private String text;
+    private String authorFirstName;
+    private long createdAt;
 
     public CommentDto() {
+    }
+
+    public String getAuthorFirstName() {
+        return authorFirstName;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setAuthorFirstName(String authorFirstName) {
+        this.authorFirstName = authorFirstName;
     }
 
     public Integer getPk() {
@@ -36,13 +49,6 @@ public class CommentDto {
         this.authorImage = authorImage;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 
     public String getText() {
         return text;
@@ -50,5 +56,9 @@ public class CommentDto {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
     }
 }
