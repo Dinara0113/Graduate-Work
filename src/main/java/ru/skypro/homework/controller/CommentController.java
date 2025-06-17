@@ -4,8 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.CommentDto;
+import ru.skypro.homework.dto.CommentsResponse;
 import ru.skypro.homework.dto.CreateOrUpdateComment;
 import ru.skypro.homework.dto.ResponseWrapper;
 import ru.skypro.homework.service.CommentService;
@@ -28,18 +30,20 @@ public class CommentController {
             @ApiResponse(responseCode = "200", description = "Комментарии успешно получены")
     })
     @GetMapping
-    public ResponseEntity<ResponseWrapper<CommentDto>> getComments(@PathVariable Integer adId) {
+    public ResponseEntity<CommentsResponse> getComments(@PathVariable Integer adId) {
         List<CommentDto> comments = commentService.getComments(adId);
-        ResponseWrapper<CommentDto> response = new ResponseWrapper<>();
+        CommentsResponse response = new CommentsResponse();
         response.setCount(comments.size());
         response.setResults(comments);
         return ResponseEntity.ok(response);
     }
 
+
     @Operation(summary = "Добавление комментария к объявлению", tags = {"Комментарии"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Комментарий успешно добавлен")
     })
+    @PreAuthorize("hasRole('USER')")
     @PostMapping
     public ResponseEntity<CommentDto> addComment(@PathVariable Integer adId,
                                                  @RequestBody CreateOrUpdateComment comment) {
@@ -50,6 +54,7 @@ public class CommentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Комментарий успешно удалён")
     })
+    @PreAuthorize("hasRole('ADMIN') or @commentAccess.checkCommentOwner(authentication.name, #commentId)")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId) {
@@ -61,6 +66,7 @@ public class CommentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Комментарий успешно обновлён")
     })
+    @PreAuthorize("hasRole('ADMIN') or @commentAccess.checkCommentOwner(authentication.name, #commentId)")
     @PatchMapping("/{commentId}")
     public ResponseEntity<CommentDto> updateComment(@PathVariable Integer adId,
                                                     @PathVariable Integer commentId,
