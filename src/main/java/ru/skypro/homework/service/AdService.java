@@ -15,5 +15,6 @@ public interface AdService {
     byte[] updateImage(Integer id, MultipartFile image);
     List<AdsDto> getAdsByEmail(String email);
     AdsDto getAdById(int id);
+    byte[] getImage(Integer id);
 
 }

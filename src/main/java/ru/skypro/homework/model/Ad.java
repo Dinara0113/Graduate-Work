@@ -18,7 +18,6 @@ public class Ad {
 
     private Integer price;
 
-    @Lob
     private byte[] image;
 
     @ManyToOne(fetch = FetchType.LAZY)

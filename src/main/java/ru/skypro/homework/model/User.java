@@ -29,7 +29,6 @@ public class User {
 
     private String phone;
 
-    @Lob
     private byte[] image;
 
     // Геттеры и сеттеры

@@ -1,5 +1,7 @@
 package ru.skypro.homework.service.impl;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +14,6 @@ import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,23 +34,34 @@ public class AdServiceImpl implements AdService {
     public List<AdsDto> getAllAds() {
         return adRepository.findAll()
                 .stream()
-                .map(adMapper::toDto)
+                .map(ad -> {
+                    AdsDto dto = adMapper.toDto(ad);
+                    dto.setImage("/ads/" + ad.getId() + "/image");
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 
     @Override
     public AdsDto addAd(CreateAds adDto, MultipartFile image) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+
         Ad ad = adMapper.toAd(adDto);
-        // пока нет аутентификации — берём первого юзера
-        User user = userRepository.findAll().stream().findFirst().orElseThrow();
         ad.setAuthor(user);
+
         try {
             ad.setImage(image.getBytes());
         } catch (IOException e) {
             throw new RuntimeException("Failed to read image", e);
         }
+
         Ad saved = adRepository.save(ad);
-        return adMapper.toDto(saved);
+        AdsDto dto = adMapper.toDto(saved);
+        dto.setImage("/ads/" + saved.getId() + "/image");
+        return dto;
     }
 
     @Override
@@ -63,7 +75,10 @@ public class AdServiceImpl implements AdService {
         ad.setTitle(adDto.getTitle());
         ad.setPrice(adDto.getPrice());
         ad.setDescription(adDto.getDescription());
-        return adMapper.toDto(adRepository.save(ad));
+        Ad saved = adRepository.save(ad);
+        AdsDto dto = adMapper.toDto(saved);
+        dto.setImage("/ads/" + saved.getId() + "/image");
+        return dto;
     }
 
     @Override
@@ -87,11 +102,17 @@ public class AdServiceImpl implements AdService {
 
     @Override
     public List<AdsDto> getAdsByCurrentUser() {
-        // пока нет аутентификации — берём первого юзера
-        Integer userId = userRepository.findAll().stream().findFirst().orElseThrow().getId();
-        return adRepository.findAllByAuthorId(userId)
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+
+        return adRepository.findAllByAuthorId(user.getId())
                 .stream()
-                .map(adMapper::toDto)
+                .map(ad -> {
+                    AdsDto dto = adMapper.toDto(ad);
+                    dto.setImage("/ads/" + ad.getId() + "/image");
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -113,15 +134,29 @@ public class AdServiceImpl implements AdService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return adRepository.findAllByAuthorId(user.getId()).stream()
-                .map(adMapper::toDto)
+                .map(ad -> {
+                    AdsDto dto = adMapper.toDto(ad);
+                    dto.setImage("/ads/" + ad.getId() + "/image");
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
+
     @Override
     public AdsDto getAdById(int id) {
         return adRepository.findById(id)
-                .map(adMapper::toDto)
+                .map(ad -> {
+                    AdsDto dto = adMapper.toDto(ad);
+                    dto.setImage("/ads/" + ad.getId() + "/image");
+                    return dto;
+                })
                 .orElseThrow(() -> new RuntimeException("Ad not found"));
     }
 
-
+    @Override
+    public byte[] getImage(Integer id) {
+        Ad ad = adRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Объявление не найдено"));
+        return ad.getImage();
+    }
 }

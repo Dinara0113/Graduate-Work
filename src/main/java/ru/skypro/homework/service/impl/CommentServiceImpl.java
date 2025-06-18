@@ -1,5 +1,7 @@
 package ru.skypro.homework.service.impl;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CreateOrUpdateComment;
@@ -45,7 +47,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto addComment(Integer adId, CreateOrUpdateComment commentDto) {
         Ad ad = adRepository.findById(adId).orElseThrow();
-        User user = userRepository.findAll().stream().findFirst().orElseThrow(); // временно без авторизации
+
+        //  Заменила заглушку на получение текущего пользователя
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
         Comment comment = commentMapper.toComment(commentDto);
         comment.setAd(ad);
@@ -57,7 +63,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Integer adId, Integer commentId) {
-        // можно дополнительно проверить, что комментарий принадлежит этому объявлению
         commentRepository.deleteById(commentId);
     }
 
