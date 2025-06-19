@@ -4,29 +4,19 @@
 
 Это веб-приложение, реализующее функционал платформы для продажи вещей и общения между пользователями. Позволяет регистрироваться, добавлять объявления, комментарии к ним, загружать аватарки и контент-картинки.
 
-Технологии
+Технологии:
+- Java 17
+- Spring Boot 3.2
+- Spring Security
+- Spring Data JPA
+- PostgreSQL
+- Liquibase
+- MapStruct
+- Swagger (SpringDoc OpenAPI)
+- Docker
+- JUnit 5
 
-Java 17
-
-Spring Boot 3.2
-
-Spring Security
-
-Spring Data JPA
-
-PostgreSQL
-
-Liquibase
-
-MapStruct
-
-Swagger (SpringDoc OpenAPI)
-
-Docker
-
-JUnit 5
-
-Структура проекта
+Структура проекта:
 
 src
 ├── main
@@ -43,44 +33,24 @@ src
 │   ├── application.properties
 │   └── db/changelog/liquibase-changeLog.xml
 
-Функционал
-
+  Функционал:
 Просмотр объявлений (GET /ads, /ads/{id})
-
 Создание/удаление/редактирование объявлений
-
 Регистрация и авторизация
-
 Смена пароля
-
 Загрузка картинок к объявлению
-
 Загрузка аватарок пользователя
-
 Комментарии к объявлению
-
 Роли: USER, ADMIN
 
-Как запустить
-
+  Как запустить?
 Удостоверьтесь, что POSTGRES работает и соединения есть
-
-Собери проект:
-
-./mvnw clean install
-
-Запусти сервер
-
-./mvnw spring-boot:run
-
-Запусти frontend:
-
-docker run -p 3000:3000 --rm ghcr.io/dmitry-bizin/front-react-avito:v1.21
-
+Собери проект:  ./mvnw clean install
+Запусти сервер:  ./mvnw spring-boot:run
+Запусти frontend:  docker run -p 3000:3000 --rm ghcr.io/dmitry-bizin/front-react-avito:v1.21
 Открой: http://localhost:3000
 
-Участник
-
+Участник:
 Dinara Allanazarova — https://github.com/Dinara0113
 
 
