@@ -16,27 +16,23 @@
 - Docker
 - JUnit 5
 
-Структура проекта:
 
-src
-└── main
-    └── java
-        └── ru
-            └── skypro
-                └── homework
-                    ├── controller       // REST-контроллеры
-                    ├── service          // интерфейсы сервисов
-                    ├── service.impl     // реализации сервисов
-                    ├── model            // JPA-сущности
-                    ├── dto              // DTO-классы
-                    ├── mapper           // MapStruct-интерфейсы
-                    ├── repository       // Spring Data JPA-репозитории
-                    └── config           // безопасность, Swagger, CORS
-└── resources
-    ├── application.properties           // настройки приложения
-    └── db
-        └── changelog
-            └── liquibase-changeLog.xml  // миграции Liquibase
+Структура проекта
+
+| Путь                                | Описание                                      |
+|-------------------------------------|-----------------------------------------------|
+| `src/main/java/.../controller`      | REST-контроллеры                              |
+| `src/main/java/.../service`         | Интерфейсы сервисов                           |
+| `src/main/java/.../service/impl`    | Реализации сервисов                           |
+| `src/main/java/.../model`           | JPA-сущности (Entity)                         |
+| `src/main/java/.../dto`             | DTO-классы                                    |
+| `src/main/java/.../mapper`          | MapStruct-интерфейсы для маппинга             |
+| `src/main/java/.../repository`      | Spring Data JPA репозитории                   |
+| `src/main/java/.../config`          | Конфигурация Spring Security, Swagger и CORS  |
+| `src/main/resources`                | Ресурсы приложения                            |
+| `src/main/resources/application.properties` | Настройки Spring Boot                       |
+| `src/main/resources/db/changelog/liquibase-changeLog.xml` | Миграции Liquibase              |
+
 
   Функционал:
 Просмотр объявлений (GET /ads, /ads/{id})
