@@ -18,6 +18,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Реализация сервиса для управления комментариями.
+ * Предоставляет методы для получения, добавления, удаления и обновления комментариев к объявлениям.
+ */
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -36,6 +40,12 @@ public class CommentServiceImpl implements CommentService {
         this.commentMapper = commentMapper;
     }
 
+    /**
+     * Возвращает список комментариев к объявлению.
+     *
+     * @param adId ID объявления
+     * @return список {@link CommentDto}
+     */
     @Override
     public List<CommentDto> getComments(Integer adId) {
         return commentRepository.findAllByAdId(adId)
@@ -44,11 +54,17 @@ public class CommentServiceImpl implements CommentService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Добавляет новый комментарий к объявлению.
+     *
+     * @param adId       ID объявления
+     * @param commentDto DTO с текстом комментария
+     * @return созданный {@link CommentDto}
+     */
     @Override
     public CommentDto addComment(Integer adId, CreateOrUpdateComment commentDto) {
         Ad ad = adRepository.findById(adId).orElseThrow();
 
-        //  Заменила заглушку на получение текущего пользователя
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
@@ -61,11 +77,25 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.toDto(commentRepository.save(comment));
     }
 
+    /**
+     * Удаляет комментарий по его ID.
+     *
+     * @param adId      ID объявления (не используется в логике, добавлен для сигнатуры)
+     * @param commentId ID комментария
+     */
     @Override
     public void deleteComment(Integer adId, Integer commentId) {
         commentRepository.deleteById(commentId);
     }
 
+    /**
+     * Обновляет текст комментария.
+     *
+     * @param adId       ID объявления (не используется в логике, добавлен для сигнатуры)
+     * @param commentId  ID комментария
+     * @param commentDto DTO с обновлённым текстом
+     * @return обновлённый {@link CommentDto}
+     */
     @Override
     public CommentDto updateComment(Integer adId, Integer commentId, CreateOrUpdateComment commentDto) {
         Comment comment = commentRepository.findById(commentId).orElseThrow();

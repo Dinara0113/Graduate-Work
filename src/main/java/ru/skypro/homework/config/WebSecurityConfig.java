@@ -10,12 +10,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
-
+/**
+ * Конфигурация безопасности Spring Security.
+ * Настраивает доступ к эндпоинтам, шифрование паролей и механизм аутентификации.
+ */
 @Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
-
+    /**
+     * Пути, доступные без аутентификации.
+     */
     private static final String[] AUTH_WHITELIST = {
             "/swagger-ui/**",
             "/v3/api-docs/**",
@@ -26,23 +31,35 @@ public class WebSecurityConfig {
             "/register"
     };
 
-
+    /**
+     * Конфигурация цепочки фильтров безопасности.
+     *
+     * @param http объект {@link HttpSecurity} для настройки
+     * @return настроенная цепочка фильтров {@link SecurityFilterChain}
+     * @throws Exception в случае ошибок конфигурации
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/ads/*/image").permitAll() // ✅ разрешаем картинки
+                        .requestMatchers(HttpMethod.GET, "/ads/*/image").permitAll()
                         .requestMatchers("/ads/**", "/users/**", "/comments/**").authenticated()
                 )
                 .cors(withDefaults())
-                .httpBasic(withDefaults());
+                .formLogin(withDefaults())         // включаем форму входа
+                .httpBasic(httpBasic -> httpBasic.disable()); // отключаем Basic Auth
 
         return http.build();
     }
 
 
+    /**
+     * Бин для шифрования паролей пользователей.
+     *
+     * @return объект {@link PasswordEncoder} с реализацией BCrypt
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

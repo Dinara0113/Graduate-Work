@@ -10,6 +10,10 @@ import ru.skypro.homework.service.AuthService;
 
 import java.util.Optional;
 
+/**
+ * Реализация сервиса авторизации и регистрации пользователей.
+ * Обеспечивает вход, регистрацию и смену пароля.
+ */
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -22,12 +26,25 @@ public class AuthServiceImpl implements AuthService {
         this.encoder = encoder;
     }
 
+    /**
+     * Выполняет проверку логина и пароля пользователя.
+     *
+     * @param userName имя пользователя (email)
+     * @param password пароль в открытом виде
+     * @return true, если авторизация успешна; false — иначе
+     */
     @Override
     public boolean login(String userName, String password) {
         Optional<User> optionalUser = userRepository.findByEmail(userName);
         return optionalUser.isPresent() && encoder.matches(password, optionalUser.get().getPassword());
     }
 
+    /**
+     * Регистрирует нового пользователя, если email ещё не занят.
+     *
+     * @param register DTO с данными пользователя
+     * @return true, если регистрация успешна; false — если пользователь уже существует
+     */
     @Override
     public boolean register(Register register) {
         if (userRepository.findByEmail(register.getUsername()).isPresent()) {
@@ -46,6 +63,14 @@ public class AuthServiceImpl implements AuthService {
         return true;
     }
 
+    /**
+     * Изменяет пароль пользователя.
+     *
+     * @param username    имя пользователя (email)
+     * @param oldPassword текущий пароль
+     * @param newPassword новый пароль
+     * @return Optional с зашифрованными данными о пароле, если успешно; иначе — пустой Optional
+     */
     @Override
     public Optional<NewPassword> changePassword(String username, String oldPassword, String newPassword) {
         Optional<User> optionalUser = userRepository.findByEmail(username);

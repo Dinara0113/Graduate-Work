@@ -13,7 +13,7 @@ public interface AdMapper {
     @Mappings({
             @Mapping(target = "pk", source = "id"),
             @Mapping(target = "author", expression = "java(ad.getAuthor().getEmail())"),
-            @Mapping(target = "image", ignore = true) // 👈 отключаем автоматический маппинг image
+            @Mapping(target = "image", expression = "java(\"/images/ad/\" + ad.getId())")
     })
     AdsDto toDto(Ad ad);
 
