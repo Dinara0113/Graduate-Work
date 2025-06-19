@@ -19,19 +19,24 @@
 Структура проекта:
 
 src
-├── main
-│   ├── java
-│   │   ├── controller         // REST-контроллеры
-│   │   ├── service            // сервисы (интерфейсы)
-│   │   ├── service.impl       // реализации сервисов
-│   │   ├── model              // JPA-сущности
-│   │   ├── dto                // DTO-классы
-│   │   ├── mapper             // MapStruct интерфейсы
-│   │   ├── repository         // Spring Data JPA репозитории
-│   │   └── config             // настройка безопасности, Swagger
-├── resources
-│   ├── application.properties
-│   └── db/changelog/liquibase-changeLog.xml
+└── main
+    └── java
+        └── ru
+            └── skypro
+                └── homework
+                    ├── controller       // REST-контроллеры
+                    ├── service          // интерфейсы сервисов
+                    ├── service.impl     // реализации сервисов
+                    ├── model            // JPA-сущности
+                    ├── dto              // DTO-классы
+                    ├── mapper           // MapStruct-интерфейсы
+                    ├── repository       // Spring Data JPA-репозитории
+                    └── config           // безопасность, Swagger, CORS
+└── resources
+    ├── application.properties           // настройки приложения
+    └── db
+        └── changelog
+            └── liquibase-changeLog.xml  // миграции Liquibase
 
   Функционал:
 Просмотр объявлений (GET /ads, /ads/{id})
