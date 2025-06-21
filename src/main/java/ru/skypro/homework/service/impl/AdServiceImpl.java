@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
-import ru.skypro.homework.mapper.AdMapper;
+import ru.skypro.homework.mapper.AdMapperManual;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.AdRepository;
@@ -15,21 +15,32 @@ import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+/**
+ * Сервис для управления объявлениями (Ad).
+ * Реализует бизнес-логику создания, обновления, удаления и получения объявлений,
+ * а также работы с изображениями.
+ */
 @Service
 public class AdServiceImpl implements AdService {
 
     private final AdRepository adRepository;
     private final UserRepository userRepository;
-    private final AdMapper adMapper;
+    private final AdMapperManual adMapper;
 
-    public AdServiceImpl(AdRepository adRepository, UserRepository userRepository, AdMapper adMapper) {
+    public AdServiceImpl(AdRepository adRepository, UserRepository userRepository, AdMapperManual adMapper) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
         this.adMapper = adMapper;
     }
 
+    /**
+     * Получить список всех объявлений.
+     *
+     * @return список объявлений
+     */
     @Override
     public List<AdsDto> getAllAds() {
         return adRepository.findAll()
@@ -42,6 +53,13 @@ public class AdServiceImpl implements AdService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Добавить новое объявление.
+     *
+     * @param adDto DTO с данными объявления
+     * @param image изображение объявления
+     * @return DTO созданного объявления
+     */
     @Override
     public AdsDto addAd(CreateAds adDto, MultipartFile image) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -64,11 +82,23 @@ public class AdServiceImpl implements AdService {
         return dto;
     }
 
+    /**
+     * Удалить объявление по id.
+     *
+     * @param id идентификатор объявления
+     */
     @Override
     public void deleteAd(Integer id) {
         adRepository.deleteById(id);
     }
 
+    /**
+     * Обновить объявление.
+     *
+     * @param id    идентификатор объявления
+     * @param adDto новые данные объявления
+     * @return обновлённое объявление
+     */
     @Override
     public AdsDto updateAd(Integer id, CreateAds adDto) {
         Ad ad = adRepository.findById(id).orElseThrow();
@@ -81,6 +111,12 @@ public class AdServiceImpl implements AdService {
         return dto;
     }
 
+    /**
+     * Получить расширенную информацию об объявлении.
+     *
+     * @param id идентификатор объявления
+     * @return расширенное представление объявления
+     */
     @Override
     public ExtendedAd getExtendedAd(Integer id) {
         Ad ad = adRepository.findById(id).orElseThrow();
@@ -100,6 +136,11 @@ public class AdServiceImpl implements AdService {
         return extendedAd;
     }
 
+    /**
+     * Получить список объявлений текущего пользователя.
+     *
+     * @return список DTO объявлений
+     */
     @Override
     public List<AdsDto> getAdsByCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -116,6 +157,13 @@ public class AdServiceImpl implements AdService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Обновить изображение объявления.
+     *
+     * @param id    идентификатор объявления
+     * @param image новое изображение
+     * @return массив байт нового изображения
+     */
     @Override
     public byte[] updateImage(Integer id, MultipartFile image) {
         Ad ad = adRepository.findById(id).orElseThrow();
@@ -128,6 +176,12 @@ public class AdServiceImpl implements AdService {
         return ad.getImage();
     }
 
+    /**
+     * Получить список объявлений по email пользователя.
+     *
+     * @param email email пользователя
+     * @return список объявлений
+     */
     @Override
     public List<AdsDto> getAdsByEmail(String email) {
         User user = userRepository.findByEmail(email)
@@ -142,6 +196,12 @@ public class AdServiceImpl implements AdService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Получить объявление по id.
+     *
+     * @param id идентификатор объявления
+     * @return DTO объявления
+     */
     @Override
     public AdsDto getAdById(int id) {
         return adRepository.findById(id)
@@ -153,10 +213,32 @@ public class AdServiceImpl implements AdService {
                 .orElseThrow(() -> new RuntimeException("Ad not found"));
     }
 
+    /**
+     * Получить изображение объявления.
+     *
+     * @param id идентификатор объявления
+     * @return массив байт изображения
+     */
     @Override
     public byte[] getImage(Integer id) {
         Ad ad = adRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Объявление не найдено"));
         return ad.getImage();
     }
+
+    /**
+     * Обновить изображение объявления (альтернативный метод).
+     *
+     * @param adId  идентификатор объявления
+     * @param image изображение
+     * @throws IOException при ошибке чтения изображения
+     */
+    @Override
+    public void updateAdImage(Integer adId, MultipartFile image) throws IOException {
+        Ad ad = adRepository.findById(adId)
+                .orElseThrow(() -> new NoSuchElementException("Ad not found with id: " + adId));
+        ad.setImage(image.getBytes());
+        adRepository.save(ad);
+    }
+
 }

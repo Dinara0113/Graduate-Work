@@ -10,7 +10,7 @@ import ru.skypro.homework.model.Comment;
 public interface CommentMapper {
 
     @Mapping(target = "author", expression = "java(comment.getAuthor() != null ? String.valueOf(comment.getAuthor().getId()) : null)")
-    @Mapping(target = "authorImage", expression = "java(comment.getAuthor() != null ? new String(comment.getAuthor().getImage()) : null)")
+    @Mapping(target = "authorImage", expression = "java(comment.getAuthor() != null ? \"/images/user/\" + comment.getAuthor().getId() : null)")
     @Mapping(target = "authorFirstName", expression = "java(comment.getAuthor() != null ? comment.getAuthor().getFirstName() : null)")
     @Mapping(target = "createdAt", expression = "java(comment.getCreatedAt().toInstant(java.time.ZoneOffset.UTC).toEpochMilli())")
     @Mapping(target = "pk", source = "id")

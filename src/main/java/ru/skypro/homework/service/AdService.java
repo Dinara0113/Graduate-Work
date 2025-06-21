@@ -1,8 +1,10 @@
+
 package ru.skypro.homework.service;
 
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface AdService {
@@ -17,4 +19,6 @@ public interface AdService {
     AdsDto getAdById(int id);
     byte[] getImage(Integer id);
 
+    void updateAdImage(Integer adId, MultipartFile image) throws IOException;
 }
+
