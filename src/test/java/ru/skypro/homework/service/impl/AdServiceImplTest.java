@@ -4,7 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
-import ru.skypro.homework.mapper.AdMapper;
+
+import ru.skypro.homework.mapper.AdMapperManual;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.AdRepository;
@@ -21,14 +22,14 @@ class AdServiceImplTest {
 
     private AdRepository adRepository;
     private UserRepository userRepository;
-    private AdMapper adMapper;
+    private AdMapperManual adMapper;
     private AdServiceImpl adService;
 
     @BeforeEach
     void setUp() {
         adRepository = mock(AdRepository.class);
         userRepository = mock(UserRepository.class);
-        adMapper = mock(AdMapper.class);
+        adMapper = mock(AdMapperManual.class);
         adService = new AdServiceImpl(adRepository, userRepository, adMapper);
     }
 

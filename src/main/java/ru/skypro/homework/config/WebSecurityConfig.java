@@ -9,6 +9,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.List;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -36,11 +38,20 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/ads/*/image").permitAll()
                         .requestMatchers("/ads/**", "/users/**", "/comments/**").authenticated()
                 )
-                .cors(withDefaults())
-                .formLogin(form -> form.disable()) // отключаем дефолтную HTML-форму входа!
-                .httpBasic(httpBasic -> httpBasic.disable());
+                .cors(cors -> cors.configurationSource(request -> {
+                    var config = new org.springframework.web.cors.CorsConfiguration();
+                    config.setAllowedOrigins(List.of("http://localhost:3000"));
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setAllowCredentials(true);
+                    return config;
+                }))
+                .formLogin(form -> form.disable())
+                .httpBasic(httpBasic -> httpBasic.disable()); // <--- отключаем Basic Auth!
         return http.build();
     }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

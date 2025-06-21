@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
-import ru.skypro.homework.mapper.AdMapper;
+import ru.skypro.homework.mapper.AdMapperManual;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.AdRepository;
@@ -28,9 +28,9 @@ public class AdServiceImpl implements AdService {
 
     private final AdRepository adRepository;
     private final UserRepository userRepository;
-    private final AdMapper adMapper;
+    private final AdMapperManual adMapper;
 
-    public AdServiceImpl(AdRepository adRepository, UserRepository userRepository, AdMapper adMapper) {
+    public AdServiceImpl(AdRepository adRepository, UserRepository userRepository, AdMapperManual adMapper) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
         this.adMapper = adMapper;
